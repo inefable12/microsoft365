@@ -2,7 +2,6 @@ import streamlit as st
 import random
 import time
 import pandas as pd
-from streamlit_autorefresh import st_autorefresh
 
 # =========================
 # CONFIG
@@ -74,6 +73,12 @@ st.experimental_set_query_params(t=int(time.time()))
 # =========================
 # TIMER
 # =========================
+
+from streamlit_autorefresh import st_autorefresh
+
+# refresca cada 1 segundo
+st_autorefresh(interval=1000, key="timer")
+
 time_limit = 60
 elapsed = int(time.time() - st.session_state.start_time)
 remaining = max(0, time_limit - elapsed)
