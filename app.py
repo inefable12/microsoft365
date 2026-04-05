@@ -4,14 +4,13 @@ import time
 import pandas as pd
 
 # =========================
-# CONFIGURACIÓN
+# CONFIG
 # =========================
-st.set_page_config(page_title="Juego Microsoft 365") #, layout="wide")
-
+st.set_page_config(page_title="Juego Microsoft 365")
 st.title("🎮 Juego: Relaciona Aplicaciones con su Función")
 
 # =========================
-# DATOS
+# DATOS (PUEDES AÑADIR MÁS AQUÍ)
 # =========================
 apps = {
     "Word": "Procesador de texto para crear documentos.",
@@ -28,7 +27,12 @@ apps = {
 # ESTADO
 # =========================
 if "game_data" not in st.session_state:
-    st.session_state.game_data = random.sample(list(apps.items()), len(apps))
+    st.session_state.game_data = random.sample(list(apps.items()), 5)
+
+if "descriptions" not in st.session_state:
+    desc = [d for _, d in st.session_state.game_data]
+    random.shuffle(desc)
+    st.session_state.descriptions = desc
 
 if "start_time" not in st.session_state:
     st.session_state.start_time = time.time()
@@ -36,60 +40,79 @@ if "start_time" not in st.session_state:
 if "answers" not in st.session_state:
     st.session_state.answers = {}
 
+if "game_over" not in st.session_state:
+    st.session_state.game_over = False
+
 # =========================
 # NUEVO JUEGO
 # =========================
 if st.button("🔄 Nuevo Juego"):
-    st.session_state.game_data = random.sample(list(apps.items()), len(apps))
+    st.session_state.game_data = random.sample(list(apps.items()), 5)
+    desc = [d for _, d in st.session_state.game_data]
+    random.shuffle(desc)
+    st.session_state.descriptions = desc
     st.session_state.start_time = time.time()
     st.session_state.answers = {}
+    st.session_state.game_over = False
     st.rerun()
 
 # =========================
-# TIMER
+# TIMER (60s)
 # =========================
+time_limit = 60
 elapsed = int(time.time() - st.session_state.start_time)
-st.subheader(f"⏱ Tiempo: {elapsed} s")
+remaining = max(0, time_limit - elapsed)
+
+st.subheader(f"⏱ Tiempo restante: {remaining} s")
+
+if remaining == 0:
+    st.session_state.game_over = True
 
 # =========================
-# INTERFAZ CON ICONOS
+# INTERFAZ
 # =========================
-st.write("### Relaciona cada icono con su descripción")
+if not st.session_state.game_over:
+    st.write("### Relaciona cada icono con una opción")
 
-cols = st.columns(2)
+    cols = st.columns(2)
 
-# lista fija de descripciones (no cambia)
-descriptions = [desc for _, desc in st.session_state.game_data]
+    with cols[0]:
+        st.write("### Aplicaciones")
+        for app, _ in st.session_state.game_data:
+            try:
+                st.image(f"icons/{app.lower()}.png", width=60)
+            except:
+                st.write(f"(Falta icono: {app})")
 
-with cols[0]:
-    st.write("### Aplicaciones")
-    for app, _ in st.session_state.game_data:
-        try:
-            st.image(f"icons/{app.lower()}.png", width=60)
-        except:
-            st.write(f"(Falta icono: {app})")
-
-with cols[1]:
-    st.write("### Selecciona la descripción correcta")
-    for i, (app, _) in enumerate(st.session_state.game_data):
-        selected = st.selectbox(
-            f"Opción {i+1}",
-            descriptions,
-            key=f"select_{app}"
-        )
-        st.session_state.answers[app] = selected
+    with cols[1]:
+        st.write("### Selecciona la descripción correcta")
+        for i, (app, _) in enumerate(st.session_state.game_data):
+            selected = st.selectbox(
+                f"Opción {i+1}",
+                st.session_state.descriptions,
+                key=f"select_{app}"
+            )
+            st.session_state.answers[app] = selected
 
 # =========================
-# VALIDAR
+# VERIFICAR AUTOMÁTICO AL FINAL
 # =========================
-if st.button("✅ Verificar"):
+if st.session_state.game_over:
     score = 0
-    for app, correct_desc in apps.items():
+    total = len(st.session_state.game_data)
+
+    for app, correct_desc in st.session_state.game_data:
         if app in st.session_state.answers:
             if st.session_state.answers[app] == correct_desc:
                 score += 1
 
-    st.success(f"Puntaje: {score} / {len(apps)}")
+    st.write("---")
+
+    if score == total:
+        st.success(f"🎉 ¡GANASTE! Puntaje: {score}/{total}")
+        st.balloons()
+    else:
+        st.error(f"💀 GAME OVER - Puntaje: {score}/{total}. Intenta otra vez")
 
 # =========================
 # TABLA
