@@ -2,6 +2,7 @@ import streamlit as st
 import random
 import time
 import pandas as pd
+from streamlit_autorefresh import st_autorefresh
 
 # =========================
 # CONFIG
