@@ -99,14 +99,3 @@ import pandas as pd
 
 df = pd.DataFrame(list(apps.items()), columns=["Aplicación", "Descripción"])
 st.dataframe(df)
-
-# =========================
-# INSTRUCCIONES
-# =========================
-st.write("""
-### Instrucciones para GitHub
-1. Crear repositorio
-2. Subir este archivo como app.py
-3. Crear carpeta 'icons/' y agregar imágenes (Word.png, Excel.png, etc.)
-4. Desplegar en Streamlit Cloud
-""")
