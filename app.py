@@ -71,9 +71,9 @@ with cols[0]:
 
 with cols[1]:
     st.write("### Selecciona la descripción correcta")
-    for app, _ in st.session_state.game_data:
+    for i, (app, _) in enumerate(st.session_state.game_data):
         selected = st.selectbox(
-            f"{app}",
+            f"Opción {i+1}",
             descriptions,
             key=f"select_{app}"
         )
