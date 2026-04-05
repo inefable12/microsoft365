@@ -63,11 +63,6 @@ if st.button("🔄 Nuevo Juego"):
 # =========================
 # AUTOREFRESH TIMER
 # =========================
-st.experimental_rerun if False else None
-st_autorefresh = st.experimental_data_editor if False else None
-
-from streamlit import experimental_rerun as rerun
-from streamlit import runtime
 
 # Uso oficial
 timer_placeholder = st.empty()
