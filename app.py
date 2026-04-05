@@ -6,11 +6,11 @@ import pandas as pd
 # =========================
 # CONFIG
 # =========================
-st.set_page_config(page_title="Juego Microsoft 365")
+st.set_page_config(page_title="Juego Microsoft 365", layout="wide")
 st.title("🎮 Juego: Relaciona Aplicaciones con su Función")
 
 # =========================
-# DATOS (PUEDES AÑADIR MÁS AQUÍ)
+# DATOS
 # =========================
 apps = {
     "Word": "Procesador de texto para crear documentos.",
@@ -43,6 +43,9 @@ if "answers" not in st.session_state:
 if "game_over" not in st.session_state:
     st.session_state.game_over = False
 
+if "score" not in st.session_state:
+    st.session_state.score = None
+
 # =========================
 # NUEVO JUEGO
 # =========================
@@ -54,19 +57,43 @@ if st.button("🔄 Nuevo Juego"):
     st.session_state.start_time = time.time()
     st.session_state.answers = {}
     st.session_state.game_over = False
+    st.session_state.score = None
     st.rerun()
 
 # =========================
-# TIMER (60s)
+# AUTOREFRESH TIMER
+# =========================
+st.experimental_rerun if False else None
+st_autorefresh = st.experimental_data_editor if False else None
+
+from streamlit import experimental_rerun as rerun
+from streamlit import runtime
+
+# Uso oficial
+timer_placeholder = st.empty()
+
+# autorefresh cada 1 segundo
+st.experimental_set_query_params(t=int(time.time()))
+
+# =========================
+# TIMER
 # =========================
 time_limit = 60
 elapsed = int(time.time() - st.session_state.start_time)
 remaining = max(0, time_limit - elapsed)
 
-st.subheader(f"⏱ Tiempo restante: {remaining} s")
+timer_placeholder.subheader(f"⏱ Tiempo restante: {remaining} s")
 
-if remaining == 0:
+if remaining == 0 and not st.session_state.game_over:
     st.session_state.game_over = True
+
+# =========================
+# BOTÓN FINALIZAR
+# =========================
+if not st.session_state.game_over:
+    if st.button("⏹ Finalizar ahora"):
+        st.session_state.game_over = True
+        st.rerun()
 
 # =========================
 # INTERFAZ
@@ -95,9 +122,9 @@ if not st.session_state.game_over:
             st.session_state.answers[app] = selected
 
 # =========================
-# VERIFICAR AUTOMÁTICO AL FINAL
+# EVALUACIÓN
 # =========================
-if st.session_state.game_over:
+if st.session_state.game_over and st.session_state.score is None:
     score = 0
     total = len(st.session_state.game_data)
 
@@ -105,6 +132,15 @@ if st.session_state.game_over:
         if app in st.session_state.answers:
             if st.session_state.answers[app] == correct_desc:
                 score += 1
+
+    st.session_state.score = score
+
+# =========================
+# RESULTADOS
+# =========================
+if st.session_state.game_over:
+    score = st.session_state.score
+    total = len(st.session_state.game_data)
 
     st.write("---")
 
@@ -115,10 +151,11 @@ if st.session_state.game_over:
         st.error(f"💀 GAME OVER - Puntaje: {score}/{total}. Intenta otra vez")
 
 # =========================
-# TABLA
+# TABLA (CONDICIONAL)
 # =========================
-st.write("---")
-st.write("### Tabla de referencia")
-
-df = pd.DataFrame(list(apps.items()), columns=["Aplicación", "Descripción"])
-st.dataframe(df)
+if st.session_state.game_over:
+    if st.session_state.score < len(st.session_state.game_data):
+        st.write("---")
+        st.write("### Tabla de referencia")
+        df = pd.DataFrame(list(apps.items()), columns=["Aplicación", "Descripción"])
+        st.dataframe(df)
