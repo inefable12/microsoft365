@@ -5,7 +5,7 @@ import time
 # =========================
 # CONFIGURACIÓN GENERAL
 # =========================
-st.set_page_config(page_title="Juego Microsoft 365", layout="wide")
+st.set_page_config(page_title="Juego Microsoft 365") #, layout="wide")
 
 st.title("🎮 Juego: Relaciona Aplicaciones de Microsoft 365")
 
