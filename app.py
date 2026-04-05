@@ -6,7 +6,7 @@ import pandas as pd
 # =========================
 # CONFIGURACIÓN
 # =========================
-st.set_page_config(page_title="Juego Microsoft 365", layout="wide")
+st.set_page_config(page_title="Juego Microsoft 365") #, layout="wide")
 
 st.title("🎮 Juego: Relaciona Aplicaciones con su Función")
 
