@@ -1,6 +1,5 @@
 import streamlit as st
 import random
-import time
 import pandas as pd
 
 # =========================
@@ -34,9 +33,6 @@ if "descriptions" not in st.session_state:
     random.shuffle(desc)
     st.session_state.descriptions = desc
 
-if "start_time" not in st.session_state:
-    st.session_state.start_time = time.time()
-
 if "answers" not in st.session_state:
     st.session_state.answers = {}
 
@@ -54,39 +50,10 @@ if st.button("🔄 Nuevo Juego"):
     desc = [d for _, d in st.session_state.game_data]
     random.shuffle(desc)
     st.session_state.descriptions = desc
-    st.session_state.start_time = time.time()
     st.session_state.answers = {}
     st.session_state.game_over = False
     st.session_state.score = None
     st.rerun()
-
-# =========================
-# AUTOREFRESH TIMER
-# =========================
-
-# Uso oficial
-timer_placeholder = st.empty()
-
-# autorefresh cada 1 segundo
-st.experimental_set_query_params(t=int(time.time()))
-
-# =========================
-# TIMER
-# =========================
-
-from streamlit_autorefresh import st_autorefresh
-
-# refresca cada 1 segundo
-st_autorefresh(interval=1000, key="timer")
-
-time_limit = 60
-elapsed = int(time.time() - st.session_state.start_time)
-remaining = max(0, time_limit - elapsed)
-
-timer_placeholder.subheader(f"⏱ Tiempo restante: {remaining} s")
-
-if remaining == 0 and not st.session_state.game_over:
-    st.session_state.game_over = True
 
 # =========================
 # BOTÓN FINALIZAR
