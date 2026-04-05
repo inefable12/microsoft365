@@ -1,16 +1,17 @@
 import streamlit as st
 import random
 import time
+import pandas as pd
 
 # =========================
-# CONFIGURACIÓN GENERAL
+# CONFIGURACIÓN
 # =========================
-st.set_page_config(page_title="Juego Microsoft 365") #, layout="wide")
+st.set_page_config(page_title="Juego Microsoft 365", layout="wide")
 
-st.title("🎮 Juego: Relaciona Aplicaciones de Microsoft 365")
+st.title("🎮 Juego: Relaciona Aplicaciones con su Función")
 
 # =========================
-# DATOS DEL JUEGO
+# DATOS
 # =========================
 apps = {
     "Word": "Procesador de texto para crear documentos.",
@@ -24,78 +25,77 @@ apps = {
 }
 
 # =========================
-# ESTADO DE SESIÓN
+# ESTADO
 # =========================
+if "game_data" not in st.session_state:
+    st.session_state.game_data = random.sample(list(apps.items()), len(apps))
+
 if "start_time" not in st.session_state:
     st.session_state.start_time = time.time()
 
-if "game_data" not in st.session_state:
-    st.session_state.game_data = []
+if "answers" not in st.session_state:
+    st.session_state.answers = {}
 
 # =========================
-# GENERAR NUEVO JUEGO
+# NUEVO JUEGO
 # =========================
-def generate_game():
-    items = list(apps.items())
-    random.shuffle(items)
-    st.session_state.game_data = items
-    st.session_state.start_time = time.time()
-
 if st.button("🔄 Nuevo Juego"):
-    generate_game()
-
-if not st.session_state.game_data:
-    generate_game()
-
-# =========================
-# TEMPORIZADOR
-# =========================
-elapsed_time = int(time.time() - st.session_state.start_time)
-st.subheader(f"⏱ Tiempo: {elapsed_time} segundos")
+    st.session_state.game_data = random.sample(list(apps.items()), len(apps))
+    st.session_state.start_time = time.time()
+    st.session_state.answers = {}
+    st.rerun()
 
 # =========================
-# INTERFAZ DEL JUEGO
+# TIMER
 # =========================
-st.write("### Arrastra (simulado) cada aplicación a su descripción")
+elapsed = int(time.time() - st.session_state.start_time)
+st.subheader(f"⏱ Tiempo: {elapsed} s")
 
-# NOTA: Streamlit no soporta drag-and-drop nativo.
-# Se simula con selectbox.
-
-results = {}
+# =========================
+# INTERFAZ CON ICONOS
+# =========================
+st.write("### Relaciona cada icono con su descripción")
 
 cols = st.columns(2)
 
+# lista fija de descripciones (no cambia)
+descriptions = [desc for _, desc in st.session_state.game_data]
+
 with cols[0]:
     st.write("### Aplicaciones")
-    app_names = [item[0] for item in st.session_state.game_data]
-    random.shuffle(app_names)
+    for app, _ in st.session_state.game_data:
+        try:
+            st.image(f"icons/{app.lower()}.png", width=60)
+        except:
+            st.write(f"(Falta icono: {app})")
 
 with cols[1]:
-    st.write("### Descripciones")
-    descriptions = [item[1] for item in st.session_state.game_data]
-
-# Selección simulada
-for app in app_names:
-    choice = st.selectbox(f"Selecciona la descripción para {app}", descriptions, key=app)
-    results[app] = choice
+    st.write("### Selecciona la descripción correcta")
+    for app, _ in st.session_state.game_data:
+        selected = st.selectbox(
+            f"{app}",
+            descriptions,
+            key=f"select_{app}"
+        )
+        st.session_state.answers[app] = selected
 
 # =========================
-# VALIDACIÓN
+# VALIDAR
 # =========================
-if st.button("✅ Verificar respuestas"):
+if st.button("✅ Verificar"):
     score = 0
-    for app, desc in results.items():
-        if apps[app] == desc:
-            score += 1
+    for app, correct_desc in apps.items():
+        if app in st.session_state.answers:
+            if st.session_state.answers[app] == correct_desc:
+                score += 1
+
     st.success(f"Puntaje: {score} / {len(apps)}")
 
 # =========================
-# TABLA DE REFERENCIA
+# TABLA
 # =========================
 st.write("---")
-st.write("### Tabla de Aplicaciones")
-
-import pandas as pd
+st.write("### Tabla de referencia")
 
 df = pd.DataFrame(list(apps.items()), columns=["Aplicación", "Descripción"])
 st.dataframe(df)
