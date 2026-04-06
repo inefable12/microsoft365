@@ -21,6 +21,11 @@ apps = {
     "OneDrive": "Almacenamiento en la nube.",
     "SharePoint": "Gestión de contenido y colaboración.",
     "Copilot": "Asistente de inteligencia artificial.",
+    "OneNote": "Toma de notas digitales organizadas.",
+    "Whiteboard": "Pizarra digital colaborativa.",
+    "Sway": "Creación de presentaciones web interactivas.",
+    "Forms": "Creación de encuestas y formularios.",
+    "Stream": "Plataforma de video empresarial."
 }
 
 # =========================
