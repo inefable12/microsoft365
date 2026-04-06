@@ -65,7 +65,7 @@ if st.button("🔄 Nuevo Juego"):
 # BOTÓN FINALIZAR
 # =========================
 if not st.session_state.game_over:
-    if st.button("⏹ Finalizar ahora"):
+    if st.button("⏹ Verificar Respuestas"):
         st.session_state.game_over = True
         st.rerun()
 
