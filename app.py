@@ -7,7 +7,7 @@ import pandas as pd
 # =========================
 st.set_page_config(page_title="Juego Microsoft 365")
 st.title("🎮 ¿Qué APP Soy")
-st.
+st.sidebar.image("icons/icono_logo.png", caption="Dr. Jesus Alvarado")
 
 # =========================
 # DATOS
