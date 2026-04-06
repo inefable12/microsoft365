@@ -6,7 +6,8 @@ import pandas as pd
 # CONFIG
 # =========================
 st.set_page_config(page_title="Juego Microsoft 365")
-st.title("🎮 Juego: Relaciona Aplicaciones con su Función")
+st.title("🎮 ¿Qué APP Soy")
+st.
 
 # =========================
 # DATOS
@@ -72,7 +73,7 @@ if not st.session_state.game_over:
     cols = st.columns(2)
 
     with cols[0]:
-        st.write("### Aplicaciones")
+        st.write("### Aplicación")
         for app, _ in st.session_state.game_data:
             try:
                 st.image(f"icons/{app.lower()}.png", width=60)
