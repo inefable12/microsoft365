@@ -25,7 +25,13 @@ apps = {
     "Whiteboard": "Pizarra digital colaborativa.",
     "Sway": "Creación de presentaciones web interactivas.",
     "Forms": "Creación de encuestas y formularios.",
-    "Stream": "Plataforma de video empresarial."
+    "Stream": "Plataforma de video empresarial.",
+    "Engage": "Plataforma para comunicación interna y comunidades.",
+    "Planner": "Gestión de tareas y planificación de equipos.",
+    "Access": "Gestión de bases de datos relacionales.",
+    "Tool": "Herramientas adicionales de productividad.",
+    "Visio": "Creación de diagramas y flujogramas.",
+    "ToDo": "Gestión personal de tareas diarias."
 }
 
 # =========================
